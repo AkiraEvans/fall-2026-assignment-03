@@ -13,8 +13,14 @@ import { Kysely } from 'kysely';
 
 export async function up(db: Kysely<any>): Promise<void> {
   // TODO: Student implementation
+  await db.schema.createTable('time_logs').addColumn('id','serial',(column)=>column.primaryKey())
+  .addColumn('ticket_id','integer',(column)=>column.references('tickets.id').onDelete('cascade'))
+  .addColumn('user_id', 'integer',(column)=>column.references('users.id').onDelete('cascade'))
+  .addColumn('hours', 'integer',(column)=>column.notNull()).addColumn('logged_at','timestamptz',(column)=>column.defaultTo(db.fn('now')),)
+  .execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
   // TODO: Student implementation
+  await db.schema.dropTable('time_logs').execute();
 }
